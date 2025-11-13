@@ -1,6 +1,6 @@
 {
   "name": "@daniildev/trading-vue3-js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "description": "Customizable charting lib for traders. Vue 3 + Vite. Based on https://github.com/C451/trading-vue-js by C451.",
   "main": "./dist/trading-vue.umd.js",

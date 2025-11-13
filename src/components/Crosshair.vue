@@ -5,6 +5,7 @@ import Utils from '../stuff/utils.js'
 
 export default {
     name: 'Crosshair',
+    emits: ['new-grid-layer', 'redraw-grid'],
     props: [ 'cursor', 'colors', 'layout', 'sub' ],
     methods: {
         create() {

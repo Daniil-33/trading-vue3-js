@@ -92,24 +92,29 @@ export default {
                 backgroundColor: this.$props.colors.back
             },
             hs: [
-                h(Crosshair, {
-                    props: this.common_props(),
-                    on: this.layer_events
-                }),
+                h(Crosshair, Object.assign({}, this.common_props(), {
+                    'onNew-grid-layer': this.layer_events['onNew-grid-layer'],
+                    'onDelete-grid-layer': this.layer_events['onDelete-grid-layer'],
+                    'onShow-grid-layer': this.layer_events['onShow-grid-layer'],
+                    'onRedraw-grid': this.layer_events['onRedraw-grid'],
+                    'onLayer-meta-props': this.layer_events['onLayer-meta-props'],
+                    'onCustom-event': this.layer_events['onCustom-event']
+                })),
                 h(KeyboardListener, {
-                    on: this.keyboard_events
+                    'onRegister-kb-listener': this.keyboard_events['onRegister-kb-listener'],
+                    'onRemove-kb-listener': this.keyboard_events['onRemove-kb-listener'],
+                    'onKeyup': this.keyboard_events['onKeyup'],
+                    'onKeydown': this.keyboard_events['onKeydown'],
+                    'onKeypress': this.keyboard_events['onKeypress']
                 }),
                 h(UxLayer, {
-                    props: {
-                        id, tv_id: this.$props.tv_id,
-                        uxs: this.uxs,
-                        colors: this.$props.colors,
-                        config: this.$props.config,
-                        updater: Math.random()
-                    },
-                    on: {
-                        'custom-event': this.emit_ux_event
-                    }
+                    id, 
+                    tv_id: this.$props.tv_id,
+                    uxs: this.uxs,
+                    colors: this.$props.colors,
+                    config: this.$props.config,
+                    updater: Math.random(),
+                    'onCustom-event': this.emit_ux_event
                 })
             ].concat(this.get_overlays(h))
         })
@@ -155,21 +160,24 @@ export default {
                     count[d.type] = 0
                 }
             }
-            return comp_list.map((x, i) => h(x.cls, {
-                    on: this.layer_events,
-                    attrs: Object.assign(this.common_props(), {
-                        id: `${x.type}_${count[x.type]++}`,
-                        type: x.type,
-                        data: x.data,
-                        settings: x.settings,
-                        i0: x.i0,
-                        tf: x.tf,
-                        num: i,
-                        grid_id: this.$props.grid_id,
-                        meta: this.$props.meta,
-                        last: x.last
-                    })
-                })
+            return comp_list.map((x, i) => h(x.cls, Object.assign({}, this.common_props(), {
+                    id: `${x.type}_${count[x.type]++}`,
+                    type: x.type,
+                    data: x.data,
+                    settings: x.settings,
+                    i0: x.i0,
+                    tf: x.tf,
+                    num: i,
+                    grid_id: this.$props.grid_id,
+                    meta: this.$props.meta,
+                    last: x.last,
+                    'onNew-grid-layer': this.layer_events['onNew-grid-layer'],
+                    'onDelete-grid-layer': this.layer_events['onDelete-grid-layer'],
+                    'onShow-grid-layer': this.layer_events['onShow-grid-layer'],
+                    'onRedraw-grid': this.layer_events['onRedraw-grid'],
+                    'onLayer-meta-props': this.layer_events['onLayer-meta-props'],
+                    'onCustom-event': this.layer_events['onCustom-event']
+                }))
             )
         },
         common_props() {
@@ -256,32 +264,50 @@ export default {
     data() {
         return {
             layer_events: {
-                'new-grid-layer': this.new_layer,
-                'delete-grid-layer': this.del_layer,
-                'show-grid-layer': d => {
+                'onNew-grid-layer': this.new_layer,
+                'onDelete-grid-layer': this.del_layer,
+                'onShow-grid-layer': d => {
                     this.renderer.show_hide_layer(d)
                     this.redraw()
                 },
-                'redraw-grid': this.redraw,
-                'layer-meta-props': d => this.$emit('layer-meta-props', d),
-                'custom-event': d => this.$emit('custom-event', d)
+                'onRedraw-grid': this.redraw,
+                'onLayer-meta-props': d => this.$emit('layer-meta-props', d),
+                'onCustom-event': e => {
+                    // Handle custom event from overlay.js wrapper
+                    if (e && e.event) {
+                        const eventMap = {
+                            'new-grid-layer': () => this.new_layer(...e.args),
+                            'delete-grid-layer': () => this.del_layer(...e.args),
+                            'show-grid-layer': () => {
+                                this.renderer.show_hide_layer(...e.args)
+                                this.redraw()
+                            },
+                            'redraw-grid': () => this.redraw(),
+                            'layer-meta-props': () => this.$emit('layer-meta-props', ...e.args)
+                        }
+                        if (eventMap[e.event]) {
+                            eventMap[e.event]()
+                        }
+                    }
+                    this.$emit('custom-event', e)
+                }
             },
             keyboard_events: {
-                'register-kb-listener': event => {
+                'onRegister-kb-listener': event => {
                     this.$emit('register-kb-listener', event)
                 },
-                'remove-kb-listener': event => {
+                'onRemove-kb-listener': event => {
                     this.$emit('remove-kb-listener', event)
                 },
-                'keyup': event => {
+                'onKeyup': event => {
                     if (!this.is_active) return
                     this.renderer.propagate('keyup', event)
                 },
-                'keydown': event => {
+                'onKeydown': event => {
                     if (!this.is_active) return // TODO: is this neeeded?
                     this.renderer.propagate('keydown', event)
                 },
-                'keypress': event => {
+                'onKeypress': event => {
                     if (!this.is_active) return
                     this.renderer.propagate('keypress', event)
                 },

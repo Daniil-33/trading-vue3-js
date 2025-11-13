@@ -4,6 +4,9 @@
 import Mouse from '../stuff/mouse.js'
 
 export default {
+    emits: ['new-grid-layer', 'delete-grid-layer', 'layer-meta-props', 'show-grid-layer', 
+            'custom-event', 'exec-script', 'change-settings', 'object-selected', 
+            'new-shader', 'new-interface', 'remove-tool'],
     props: [
         'id', 'num', 'interval', 'cursor', 'colors',
         'layout', 'sub', 'data', 'settings', 'grid_id',
@@ -30,7 +33,7 @@ export default {
             this._$emit = this.$emit
             this.$emit = this.custom_event
         } catch(e) {
-            return
+            this._$emit = this.$emit
         }
 
         this._$emit('new-grid-layer', {

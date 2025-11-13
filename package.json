@@ -1,15 +1,18 @@
 {
-  "name": "trading-vue3-js",
-  "version": "1.0.3",
+  "name": "@daniildev/trading-vue3-js",
+  "version": "1.0.4",
   "type": "module",
-  "description": "Customizable charting lib for traders. Based on https://github.com/C451/trading-vue-js by C451.",
+  "description": "Customizable charting lib for traders. Vue 3 + Vite. Based on https://github.com/C451/trading-vue-js by C451.",
   "main": "./dist/trading-vue.umd.js",
   "module": "./dist/trading-vue.es.js",
+  "types": "./dist/trading-vue.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/trading-vue.d.ts",
       "import": "./dist/trading-vue.es.js",
       "require": "./dist/trading-vue.umd.js"
-    }
+    },
+    "./dist/style.css": "./dist/style.css"
   },
   "scripts": {
     "test": "vite serve test --mode development",
@@ -17,24 +20,31 @@
     "eslint": "./node_modules/.bin/eslint --ext .js,.vue src",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
   },
   "author": "SaViGnAnO",
   "license": "MIT",
   "files": [
-    "dist/*",
-    "src/*"
+    "dist",
+    "README.md",
+    "LICENSE.md",
+    "MIGRATION_COMPLETE.md"
   ],
   "keywords": [
     "trading",
     "vue",
+    "vue3",
     "charts",
     "crypto",
     "visualization",
     "reactive",
     "algo-trading",
     "finviz",
-    "trading-systems"
+    "trading-systems",
+    "vite",
+    "candlestick",
+    "technical-analysis"
   ],
   "homepage": "https://github.com/SaViGnAnO/trading-vue3-js#readme",
   "repository": "github:SaViGnAnO/trading-vue3-js",

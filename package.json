@@ -1,16 +1,23 @@
 {
   "name": "trading-vue3-js",
   "version": "1.0.3",
+  "type": "module",
   "description": "Customizable charting lib for traders. Based on https://github.com/C451/trading-vue-js by C451.",
-  "main": "./dist/trading-vue.js",
+  "main": "./dist/trading-vue.umd.js",
+  "module": "./dist/trading-vue.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/trading-vue.es.js",
+      "require": "./dist/trading-vue.umd.js"
+    }
+  },
   "scripts": {
-    "test": "webpack serve --config webpack/test.config.js --mode development --progress --hot",
+    "test": "vite serve test --mode development",
     "auto-test": "ava",
     "eslint": "./node_modules/.bin/eslint --ext .js,.vue src",
-    "dev": "webpack serve --config webpack/dev.config.js --mode development --progress --hot",
-    "ww": "webpack serve --config webpack/dev.config.js --mode production --progress --hot",
-    "build": "webpack  --config webpack/build.config.js --mode production --progress",
-    "cdn": "webpack serve --config webpack/cdn.config.js --mode development --progress --hot"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "author": "SaViGnAnO",
   "license": "MIT",
@@ -37,26 +44,14 @@
     "@babel/plugin-transform-parameters": "^7.25.0",
     "@babel/plugin-transform-runtime": "^7.25.0",
     "@babel/preset-env": "^7.25.0",
-  "@babel/register": "^7.25.0",
-    "@vue/compiler-sfc": "^3.4.38",
+    "@babel/register": "^7.25.0",
+    "@vitejs/plugin-vue": "^5.0.0",
     "ava": "^5.3.1",
-    "babel-loader": "^9.1.3",
-    "css-loader": "^6.10.0",
     "eslint": "^9.8.0",
     "eslint-config-eslint": "^9.0.0",
     "eslint-plugin-vue": "^9.27.0",
-    "html-webpack-plugin": "^5.5.3",
-    "null-loader": "^4.0.1",
-    "raw-loader": "^4.0.2",
-    "request": "^2.88.2",
-    "terser-webpack-plugin": "^5.3.10",
-    "vue-codemirror": "^4.0.6",
-    "vue-loader": "^17.4.2",
-    "vue-style-loader": "^4.1.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.2",
-    "worker-loader": "^3.0.8"
+    "vite": "^5.0.0",
+    "vue-codemirror": "^4.0.6"
   },
   "dependencies": {
     "@babel/runtime": "^7.25.0",

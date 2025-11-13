@@ -38,6 +38,6 @@ export default {
             deep: true
         }
     },
-    render(h) { return h() }
+    render() { return null }
 }
 </script>

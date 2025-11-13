@@ -130,5 +130,5 @@ export default {
         }
     },
     data() { return { uxs_count: 0, last_ux_id: null } },
-    render(h) { return h() }
+    render() { return null }
 }

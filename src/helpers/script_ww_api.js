@@ -1,11 +1,9 @@
 
 // Webworker interface
 
-// Compiled webworker (see webpack/ww_plugin.js)
-import worker_data from './tmp/ww$$$.json'
+// Import worker using Vite's syntax
+import ScriptWorker from './script_ww.js?worker'
 import Utils from '../stuff/utils.js'
-import lz from 'lz-string'
-import {} from './script_ww.js' // For webworker-loader to find the ww
 
 const HAS_WINDOW = typeof window !== 'undefined'
 
@@ -21,22 +19,8 @@ class WebWork {
     start() {
     if (!HAS_WINDOW) return
     if (this.worker) this.worker.terminate()
-        // URL.createObjectURL
-    window.URL = window.URL || window.webkitURL
-        let data = lz.decompressFromBase64(worker_data[0])
-        var blob
-        try {
-            blob = new Blob([data], {type: 'application/javascript'})
-        } catch (e) {
-            // Backwards-compatibility
-            window.BlobBuilder = window.BlobBuilder ||
-                window.WebKitBlobBuilder ||
-                window.MozBlobBuilder
-            blob = new BlobBuilder()
-            blob.append(data)
-            blob = blob.getBlob()
-        }
-        this.worker = new Worker(URL.createObjectURL(blob))
+        // Create worker using Vite's worker import
+        this.worker = new ScriptWorker()
         this.worker.onmessage = e => this.onmessage(e)
     }
 

@@ -3,6 +3,7 @@
      propagates to all KeyboardListeners -->
 
 <script>
+import { h } from 'vue'
 
 export default {
     name: 'Keyboard',
@@ -12,12 +13,15 @@ export default {
         window.addEventListener('keypress', this.keypress)
         this._listeners = {}
     },
-        beforeUnmount: function () {
+    beforeUnmount: function () {
         window.removeEventListener('keydown', this.keydown)
         window.removeEventListener('keyup', this.keyup)
         window.removeEventListener('keypress', this.keypress)
     },
-    render(h) { return h() },
+    render() { 
+        // Return null since this component doesn't render anything visible
+        return null
+    },
     methods: {
         keydown (event) {
             for (var id in this._listeners) {

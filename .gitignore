@@ -3,3 +3,18 @@ node_modules
 cdn_status.js
 ww$$$.json
 package-lock.json
+
+# Vite
+dist
+.env
+.env.local
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

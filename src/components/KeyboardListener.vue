@@ -6,7 +6,7 @@
 
 export default {
     name: 'KeyboardListener',
-    render(h) { return h() },
+    render() { return null },
     created: function () {
         this.$emit('register-kb-listener', {
         id: this._kid || (this._kid = ++KeyboardListener._idc),

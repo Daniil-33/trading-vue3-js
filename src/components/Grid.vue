@@ -26,8 +26,42 @@ export default {
     name: 'Grid',
     props: [
         'sub', 'layout', 'range', 'interval', 'cursor', 'colors', 'overlays',
-        'width', 'height', 'data', 'grid_id', 'y_transform', 'font', 'tv_id',
+        'width', 'height', 'data', 'dc', 'grid_id', 'y_transform', 'font', 'tv_id',
         'config', 'meta', 'shaders'
+    ],
+    emits: [
+        // 'custom-event', 'cursor-changed', 'register-kb-listener', 'layer-meta-props'
+        'custom-event',
+        'range-changed',
+        'rezoom-range',
+        'scroll-lock',
+        'drawing-mode-off',
+        'object-selected',
+        'change-settings',
+        'remove-tool',
+        'tool-selected',
+        'layer-meta-props',
+        'new-grid-layer',
+        'delete-grid-layer',
+        'show-grid-layer',
+        'redraw-grid',
+        'exec-script',
+        'register-tools',
+        'sidebar-transform',
+        'legend-button-click',
+        'legend-button-click',
+        'item-selected',
+        'register-kb-listener',
+        'remove-kb-listener',
+        'keydown',
+        'keyup',
+        'keypress',
+        'new-shader',
+        'data-len-changed',
+        'grid-mousedown',
+        'signal',
+        'cursor-locked',
+        'cursor-changed',
     ],
     mixins: [Canvas, UxList],
     components: { Crosshair, KeyboardListener },
@@ -52,6 +86,7 @@ export default {
                 this._registry[indicator] = i
             })
         })
+
         this.$emit('custom-event', {
             event: 'register-tools', args: tools
         })
@@ -189,6 +224,7 @@ export default {
                 sub: this.$props.sub,
                 font: this.$props.font,
                 config: this.$props.config,
+                dc: this.$props.dc  // Pass DataCube to overlays
             }
         },
         emit_ux_event(e) {

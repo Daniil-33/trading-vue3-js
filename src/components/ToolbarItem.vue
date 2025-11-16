@@ -1,26 +1,38 @@
 
 <template>
-    <div :class="['trading-vue-tbitem', selected ? 'selected-item' : '']"
+    <div
+        :class="['trading-vue-tbitem', selected ? 'selected-item' : '']"
         @click="emit_selected('click')"
         @mousedown="mousedown"
         @touchstart="mousedown"
         @touchend="emit_selected('touch')"
-        :style="item_style">
+        :style="item_style"
+    >
         <div class="trading-vue-tbicon tvjs-pixelated"
             :style="icon_style">
         </div>
-        <div class="trading-vue-tbitem-exp" v-if="data.group"
+
+        <div
+            class="trading-vue-tbitem-exp"
+            v-if="data.group"
             :style="exp_style"
             @click="exp_click"
             @mousedown="expmousedown"
             @mouseover="expmouseover"
-            @mouseleave="expmouseleave">
+            @mouseleave="expmouseleave"
+        >
             ᐳ
         </div>
-        <item-list :config="config" :items="data.items"
-            v-if="show_exp_list" :colors="colors" :dc="dc"
+
+        <item-list
+            :config="config"
+            :items="data.items"
+            v-if="show_exp_list"
+            :colors="colors"
+            :dc="dc"
             @close-list="close_list"
-            @item-selected="emit_selected_sub"/>
+            @item-selected="emit_selected_sub"
+        />
     </div>
 </template>
 

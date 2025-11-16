@@ -1,18 +1,23 @@
 
 <template>
-    <div class="trading-vue-toolbar" :style="styles"
-        :key="tool_count">
-        <toolbar-item v-for="(tool, i) in groups"
-            v-if="tool.icon && !tool.hidden"
-            @item-selected="selected"
-            :key="i"
-            :data="tool"
-            :subs="sub_map"
-            :dc="data"
-            :config="config"
-            :colors="colors"
-            :selected="is_selected(tool)">
-        </toolbar-item>
+    <div
+        class="trading-vue-toolbar"
+        :style="styles"
+        :key="tool_count"
+    >
+        <template v-for="(tool, i) in groups">
+             <toolbar-item
+                v-if="tool.icon && !tool.hidden"
+                @item-selected="selected"
+                :key="i"
+                :data="tool"
+                :subs="sub_map"
+                :dc="dc || data"
+                :config="config"
+                :colors="colors"
+                :selected="is_selected(tool)">
+            </toolbar-item>
+        </template>
     </div>
 </template>
 
@@ -23,10 +28,13 @@ import ToolbarItem from './ToolbarItem.vue'
 export default {
     name: 'Toolbar',
     props: [
-        'data', 'height', 'colors', 'tv_id', 'config'
+        'data', 'dc', 'height', 'colors', 'tv_id', 'config'
     ],
+    emits: ['custom-event'],
     components: { ToolbarItem },
     mounted() {
+        console.log('Toolbar mounted, dc:', this.dc)
+        console.log('Toolbar tools:', this.dc?.tools)
     },
     methods: {
         selected(tool) {
@@ -41,9 +49,14 @@ export default {
         is_selected(tool) {
             if (tool.group) {
                 return !!tool.items.find(
-                    x => x.type === this.data.tool)
+                    x => x.type === (this.dc?.data?.tool || this.data?.tool))
             }
-            return tool.type === this.data.tool
+            return tool.type === (this.dc?.data?.tool || this.data?.tool)
+        }
+    },
+    data() {
+        return {
+            _lastSelected: null
         }
     },
     computed: {
@@ -63,8 +76,10 @@ export default {
             }
         },
         groups() {
+            // Use dc (DataCube) if available, otherwise fall back to data
+            let source = this.dc || this.data
             let arr = []
-            for (var tool of this.data.tools || []) {
+            for (var tool of source.data.tools || []) {
                 if (!tool.group) {
                     arr.push(tool)
                     continue
@@ -84,13 +99,20 @@ export default {
         }
     },
     watch: {
-        data: {
+        dc: {
             handler(n) {
                 // For some reason Vue.js doesn't want to
                 // update 'tools' automatically when new item
                 // is pushed/removed. Yo, Vue, I herd you
                 // you want more dirty tricks?
-                if (n.tools) this.tool_count = n.tools.length
+                if (n?.tools) this.tool_count = n.tools.length
+            },
+            deep: true
+        },
+        data: {
+            handler(n) {
+                // Fallback for when dc is not available
+                if (!this.dc && n?.tools) this.tool_count = n.tools.length
             },
             deep: true
         }

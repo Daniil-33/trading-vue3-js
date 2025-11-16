@@ -27,7 +27,12 @@ export default {
                     this.mouse.x, this.mouse.y,
                 ))) {
                     if (!this.selected) {
-                        this.$emit('object-selected')
+                        // Vue 3: Use custom_event if available
+                        if (this.custom_event) {
+                            this.custom_event('object-selected')
+                        } else {
+                            this.$emit('object-selected')
+                        }
                     }
                     this.start_drag()
                     e.preventDefault()
@@ -36,7 +41,12 @@ export default {
             })
             this.mouse.on('mouseup', e => {
                 this.drag = null
-                this.$emit('scroll-lock', false)
+                // Vue 3: Use custom_event if available
+                if (this.custom_event) {
+                    this.custom_event('scroll-lock', false)
+                } else {
+                    this.$emit('scroll-lock', false)
+                }
             })
 
             this.keys = new Keys(this)
@@ -52,9 +62,16 @@ export default {
             }
         },
         set_state(name) {
-            this.$emit('change-settings', {
-                 $state: name
-            })
+            // Vue 3: Use custom_event if available
+            if (this.custom_event) {
+                this.custom_event('change-settings', {
+                     $state: name
+                })
+            } else {
+                this.$emit('change-settings', {
+                     $state: name
+                })
+            }
         },
         watch_uuid(n, p) {
             // If layer $uuid is changed, then re-init
@@ -73,10 +90,26 @@ export default {
             this.collisions = []
         },
         remove_tool() {
-            if (this.selected) this.$emit('remove-tool')
+            if (this.selected) {
+                console.log('[Tool.remove_tool] Removing tool', {
+                    toolName: this.$options.name,
+                    uuid: this.$props.settings.$uuid
+                })
+                // Vue 3: Use custom_event if available
+                if (this.custom_event) {
+                    this.custom_event('remove-tool')
+                } else {
+                    this.$emit('remove-tool')
+                }
+            }
         },
         start_drag() {
-            this.$emit('scroll-lock', true)
+            // Vue 3: Use custom_event if available
+            if (this.custom_event) {
+                this.custom_event('scroll-lock', true)
+            } else {
+                this.$emit('scroll-lock', true)
+            }
             let cursor = this.$props.cursor
             this.drag = { t: cursor.t, y$: cursor.y$ }
             this.pins.forEach(x => x.rec_position())

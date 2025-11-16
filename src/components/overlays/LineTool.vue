@@ -13,6 +13,7 @@ import Ray from '../primitives/ray.js'
 export default {
     name: 'LineTool',
     mixins: [Overlay, Tool],
+    emits: ['drawing-mode-off', 'scroll-lock', 'object-selected', 'change-settings', 'remove-tool'],
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.1.0' }
@@ -51,8 +52,17 @@ export default {
             this.pins[1].on('settled', () => {
                 // Call when current tool drawing is finished
                 // (Optionally) reset the mode back to 'Cursor'
-                this.set_state('finished')
-                this.$emit('drawing-mode-off')
+                // IMPORTANT: Only emit drawing-mode-off if this is initial creation
+                // (state is NOT 'finished'). If already finished, this is just a drag.
+                if (this.$props.settings.$state !== 'finished') {
+                    this.set_state('finished')
+                    // Vue 3: Use custom_event if available
+                    if (this.custom_event) {
+                        this.custom_event('drawing-mode-off')
+                    } else {
+                        this.$emit('drawing-mode-off')
+                    }
+                }
             })
         },
         draw(ctx) {
@@ -83,16 +93,16 @@ export default {
             return this.$props.settings
         },
         p1() {
-            return this.$props.settings.p1
+            return this.$props.settings?.p1
         },
         p2() {
-            return this.$props.settings.p2
+            return this.$props.settings?.p2
         },
         line_width() {
-            return this.sett.lineWidth || 0.9
+            return this.sett?.lineWidth || 0.9
         },
         color() {
-            return this.sett.color || '#42b28a'
+            return this.sett?.color || '#42b28a'
         }
     },
     data() {

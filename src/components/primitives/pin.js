@@ -96,9 +96,16 @@ export default class Pin {
         //}
 
         // Reset the settings attahed to the pin (position)
-        this.comp.$emit('change-settings', {
-             [this.name]: [this.t, this.y$]
-        })
+        // Vue 3: Use custom_event if available, otherwise use $emit
+        if (this.comp.custom_event) {
+            this.comp.custom_event('change-settings', {
+                 [this.name]: [this.t, this.y$]
+            })
+        } else {
+            this.comp.$emit('change-settings', {
+                 [this.name]: [this.t, this.y$]
+            })
+        }
     }
 
     update_from(data, emit = false) {
@@ -116,9 +123,18 @@ export default class Pin {
         //    this.t = this.layout.ti_map.i2t(this.t )
         //}
 
-        if (emit) this.comp.$emit('change-settings', {
-             [this.name]: [this.t, this.y$]
-        })
+        if (emit) {
+            // Vue 3: Use custom_event if available, otherwise use $emit
+            if (this.comp.custom_event) {
+                this.comp.custom_event('change-settings', {
+                     [this.name]: [this.t, this.y$]
+                })
+            } else {
+                this.comp.$emit('change-settings', {
+                     [this.name]: [this.t, this.y$]
+                })
+            }
+        }
 
     }
 
@@ -146,15 +162,26 @@ export default class Pin {
             case 'tracking':
                 this.state = 'settled'
                 if (this.on_settled) this.on_settled()
-                this.comp.$emit('scroll-lock', false)
+                // Use custom_event for Vue 3 compatibility
+                if (this.comp.custom_event) {
+                    this.comp.custom_event('scroll-lock', false)
+                } else {
+                    this.comp.$emit('scroll-lock', false)
+                }
                 break
             case 'settled':
                 if (this.hidden) return
                 if (this.hover()) {
                     this.state = 'dragging'
                     this.moved = false
-                    this.comp.$emit('scroll-lock', true)
-                    this.comp.$emit('object-selected')
+                    // Use custom_event for Vue 3 compatibility
+                    if (this.comp.custom_event) {
+                        this.comp.custom_event('scroll-lock', true)
+                        this.comp.custom_event('object-selected')
+                    } else {
+                        this.comp.$emit('scroll-lock', true)
+                        this.comp.$emit('object-selected')
+                    }
                 }
                 break
         }
@@ -168,7 +195,12 @@ export default class Pin {
             case 'dragging':
                 this.state = 'settled'
                 if (this.on_settled) this.on_settled()
-                this.comp.$emit('scroll-lock', false)
+                // Use custom_event for Vue 3 compatibility
+                if (this.comp.custom_event) {
+                    this.comp.custom_event('scroll-lock', false)
+                } else {
+                    this.comp.$emit('scroll-lock', false)
+                }
                 break
         }
     }

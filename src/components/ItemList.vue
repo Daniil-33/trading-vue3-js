@@ -1,16 +1,22 @@
 
 <template>
-    <div class="tvjs-item-list" :style="list_style()"
-        @mousedown="thismousedown">
-        <div v-for="item of items" :class="item_class(item)"
-            v-if="!item.hidden" @click="e => item_click(e, item)"
-                :style="item_style(item)">
-            <div class="trading-vue-tbicon tvjs-pixelated"
-                :style="icon_style(item)">
+    <div
+        class="tvjs-item-list" :style="list_style()"
+        @mousedown="thismousedown"
+    >
+        <template v-for="(item, i) in items">
+            <div
+                :class="item_class(item)"
+                v-if="item && !item.hidden" @click="e => item_click(e, item)"
+                :style="item_style(item)"
+            >
+                <div class="trading-vue-tbicon tvjs-pixelated"
+                    :style="icon_style(item)">
+                </div>
+                <div>{{item.type}}</div>
             </div>
-            <div>{{item.type}}</div>
-        </div>
-    </div>
+        </template>
+</div>
 </template>
 
 <script>
@@ -23,7 +29,7 @@ export default {
             'mousedown', this.onmousedown
         )
     },
-        beforeUnmount() {
+    beforeUnmount() {
         window.removeEventListener(
             'mousedown', this.onmousedown
         )

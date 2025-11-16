@@ -55,6 +55,7 @@ export default class DCEvents {
 
     // Called when overalay/tv emits 'custom-event'
     on_custom_event(event, args) {
+        console.log('[DataCube.on_custom_event]', { event, args })
         switch(event) {
             case 'register-tools': this.register_tools(args)
                 break
@@ -65,19 +66,22 @@ export default class DCEvents {
             case 'data-len-changed': this.data_changed(args)
                 break
             case 'tool-selected':
+                console.log('[DataCube.tool-selected]', args)
                 if (!args[0]) break // TODO: Quick fix, investigate
                 if (args[0].split(':')[0] === 'System') {
                     this.system_tool(args[0].split(':')[1])
                     break
                 }
                 this.data.tool = args[0]
+                console.log('[DataCube.tool-selected] Set data.tool to:', args[0])
                 if (args[0] === 'Cursor') {
                     this.drawing_mode_off()
                 }
                 break
             case 'grid-mousedown': this.grid_mousedown(args)
                 break
-            case 'drawing-mode-off': this.drawing_mode_off()
+            case 'drawing-mode-off':
+                this.drawing_mode_off()
                 break
             case 'change-settings': this.change_settings(args)
                 break
@@ -85,7 +89,8 @@ export default class DCEvents {
                 break
             case 'scroll-lock': this.on_scroll_lock(args[0])
                 break
-            case 'object-selected': this.object_selected(args)
+            case 'object-selected':
+                this.object_selected(args)
                 break
             case 'remove-tool': this.system_tool('Remove')
                 break
@@ -310,36 +315,26 @@ export default class DCEvents {
     }
 
     grid_mousedown(args) {
-        // TODO: tool state finished?
+        // First unselect everything
         this.object_selected([])
-        // Remove the previous RangeTool
-        let rem = () => this.get('RangeTool')
-            .filter(x => x.settings.shiftMode)
-            .forEach(x => this.del(x.id))
-        if (this.data.tool && this.data.tool !== 'Cursor' &&
-           !this.data.drawingMode) {
-            // Prevent from "null" tools (tool created with HODL)
-            if (args[1].type !== 'tap') {
-                this.data.drawingMode = true
-                this.build_tool(args[0])
-            } else {
-                this.tv.showTheTip(
-                    `<b>Hodl</b>+<b>Drug</b> to create, ` +
-                    `<b>Tap</b> to finish a tool`
-                )
-            }
-        } else if (this.sett.shift_measure && args[1].shiftKey) {
-            rem()
-            this.tv.$nextTick(() =>
-                this.build_tool(args[0], 'RangeTool:ShiftMode'))
-        } else {
-            rem()
+
+        let cursor = this.tv.$refs.chart.cursor
+        if (cursor.mode !== 'explore') return
+        if (cursor.lock_tool) return
+        if (!this.data.tool || this.data.tool === 'Cursor') {
+            return
+        }
+        if (this.data.drawingMode) return
+        this.build_tool(args[0])
+        if (args[1]) {
+            this.data.drawingMode = true
         }
     }
 
     drawing_mode_off() {
         this.data.drawingMode = false
         this.data.tool = 'Cursor'
+        this.show_selected = false
     }
 
     // Place a new tool
@@ -352,6 +347,10 @@ export default class DCEvents {
         let sett = Object.assign({}, proto.settings || {})
         let data = (proto.data || []).slice()
 
+        // Initialize pin properties for reactivity
+        if (!('p1' in sett)) sett.p1 = null
+        if (!('p2' in sett)) sett.p2 = null
+        
         if(!('legend' in sett)) sett.legend = false
         if(!('z-index' in sett)) sett['z-index'] = 100
         sett.$selected = true
@@ -374,9 +373,14 @@ export default class DCEvents {
 
     // Remove selected / Remove all, etc
     system_tool(type) {
+        console.log('[DataCube.system_tool]', {
+            type,
+            selected: this.data.selected
+        })
         switch (type) {
             case 'Remove':
                 if (this.data.selected) {
+                    console.log('[DataCube.system_tool] Removing:', this.data.selected)
                     this.del(this.data.selected)
                     this.remove_trash_icon()
                     this.drawing_mode_off()
@@ -401,11 +405,16 @@ export default class DCEvents {
 
     // When new object is selected / unselected
     object_selected(args) {
+        console.log('[DataCube.object_selected]', {
+            args,
+            currentSelected: this.data.selected
+        })
         var q = this.data.selected
         if (q) {
             // Check if current drawing is finished
             //let res = this.get_one(`${q}.settings`)
             //if (res && res.$state !== 'finished') return
+            console.log('[DataCube.object_selected] Deselecting:', q)
             this.merge(`${q}.settings`, {
                 $selected: false
             })
@@ -413,9 +422,13 @@ export default class DCEvents {
         }
         this.data.selected = null
 
-        if (!args.length) return
+        if (!args.length) {
+            console.log('[DataCube.object_selected] No args, deselected all')
+            return
+        }
 
         this.data.selected = args[2]
+        console.log('[DataCube.object_selected] Selecting:', args[2])
         this.merge(`${args[2]}.settings`, {
             $selected: true
         })

@@ -10,6 +10,7 @@ import Seg from '../primitives/seg.js'
 export default {
     name: 'RangeTool',
     mixins: [Overlay, Tool],
+    emits: ['drawing-mode-off', 'scroll-lock', 'object-selected', 'change-settings', 'remove-tool'],
     methods: {
         meta_info() {
             return { author: 'C451', version: '2.0.1' }
@@ -58,8 +59,17 @@ export default {
             this.pins[1].on('settled', () => {
                 // Call when current tool drawing is finished
                 // (Optionally) reset the mode back to 'Cursor'
-                this.set_state('finished')
-                this.$emit('drawing-mode-off')
+                // IMPORTANT: Only emit drawing-mode-off if this is initial creation
+                // (state is NOT 'finished'). If already finished, this is just a drag.
+                if (this.$props.settings.$state !== 'finished') {
+                    this.set_state('finished')
+                    // Vue 3: Use custom_event if available
+                    if (this.custom_event) {
+                        this.custom_event('drawing-mode-off')
+                    } else {
+                        this.$emit('drawing-mode-off')
+                    }
+                }
                 // Deselect the tool in shiftMode
                 if (this.shift) this._$emit('custom-event', {
                     event: 'object-selected', args: []

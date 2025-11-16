@@ -21,6 +21,7 @@ import UxWrapper from './UxWrapper.vue'
 export default {
     name: 'UxLayer',
     props: ['tv_id', 'id', 'uxs', 'updater', 'colors', 'config'],
+    emits: ['custom-event'],
     components: { UxWrapper },
     created () {
     },

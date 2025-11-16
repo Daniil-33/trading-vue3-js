@@ -33,8 +33,6 @@ export default {
     emits: ['custom-event'],
     components: { ToolbarItem },
     mounted() {
-        console.log('Toolbar mounted, dc:', this.dc)
-        console.log('Toolbar tools:', this.dc?.tools)
     },
     methods: {
         selected(tool) {

@@ -91,10 +91,6 @@ export default {
         },
         remove_tool() {
             if (this.selected) {
-                console.log('[Tool.remove_tool] Removing tool', {
-                    toolName: this.$options.name,
-                    uuid: this.$props.settings.$uuid
-                })
                 // Vue 3: Use custom_event if available
                 if (this.custom_event) {
                     this.custom_event('remove-tool')

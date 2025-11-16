@@ -55,7 +55,6 @@ export default class DCEvents {
 
     // Called when overalay/tv emits 'custom-event'
     on_custom_event(event, args) {
-        console.log('[DataCube.on_custom_event]', { event, args })
         switch(event) {
             case 'register-tools': this.register_tools(args)
                 break
@@ -66,14 +65,12 @@ export default class DCEvents {
             case 'data-len-changed': this.data_changed(args)
                 break
             case 'tool-selected':
-                console.log('[DataCube.tool-selected]', args)
                 if (!args[0]) break // TODO: Quick fix, investigate
                 if (args[0].split(':')[0] === 'System') {
                     this.system_tool(args[0].split(':')[1])
                     break
                 }
                 this.data.tool = args[0]
-                console.log('[DataCube.tool-selected] Set data.tool to:', args[0])
                 if (args[0] === 'Cursor') {
                     this.drawing_mode_off()
                 }
@@ -373,14 +370,9 @@ export default class DCEvents {
 
     // Remove selected / Remove all, etc
     system_tool(type) {
-        console.log('[DataCube.system_tool]', {
-            type,
-            selected: this.data.selected
-        })
         switch (type) {
             case 'Remove':
                 if (this.data.selected) {
-                    console.log('[DataCube.system_tool] Removing:', this.data.selected)
                     this.del(this.data.selected)
                     this.remove_trash_icon()
                     this.drawing_mode_off()
@@ -405,16 +397,11 @@ export default class DCEvents {
 
     // When new object is selected / unselected
     object_selected(args) {
-        console.log('[DataCube.object_selected]', {
-            args,
-            currentSelected: this.data.selected
-        })
         var q = this.data.selected
         if (q) {
             // Check if current drawing is finished
             //let res = this.get_one(`${q}.settings`)
             //if (res && res.$state !== 'finished') return
-            console.log('[DataCube.object_selected] Deselecting:', q)
             this.merge(`${q}.settings`, {
                 $selected: false
             })
@@ -423,12 +410,10 @@ export default class DCEvents {
         this.data.selected = null
 
         if (!args.length) {
-            console.log('[DataCube.object_selected] No args, deselected all')
             return
         }
 
         this.data.selected = args[2]
-        console.log('[DataCube.object_selected] Selecting:', args[2])
         this.merge(`${args[2]}.settings`, {
             $selected: true
         })

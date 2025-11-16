@@ -79,7 +79,7 @@ export default {
             // Use dc (DataCube) if available, otherwise fall back to data
             let source = this.dc || this.data
             let arr = []
-            for (var tool of source.data.tools || []) {
+            for (var tool of (source && source.data && source.data.tools || [])) {
                 if (!tool.group) {
                     arr.push(tool)
                     continue

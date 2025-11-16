@@ -246,6 +246,11 @@ export default {
                 this.skin_proto.font : this.font
         }
     },
+    emits: [
+        'custom-event',
+        'range-changed',
+        'legend-button-click'
+    ],
     data() {
         return { reset: 0, tip: null }
     },

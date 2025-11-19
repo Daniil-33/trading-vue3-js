@@ -6,6 +6,7 @@ import Utils from '../stuff/utils.js'
 import DCCore from './dc_core.js'
 import SettProxy from './sett_proxy.js'
 import AggTool from './agg_tool.js'
+import { reactive } from 'vue'
 
 
 // Interface methods. Private methods in dc_core.js
@@ -26,7 +27,10 @@ export default class DataCube extends DCCore {
 
         super()
         this.sett = sett
-        this.data = data
+        
+        // 🔧 FIX: Make data reactive to enable Vue reactivity tracking
+        this.data = reactive(data)
+        
         this.sett = SettProxy(sett, this.ww)
         this.agg = new AggTool(this, sett.aggregation)
         this.se_state = {}

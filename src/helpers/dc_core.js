@@ -4,7 +4,7 @@
 import Utils from '../stuff/utils.js'
 import DCEvents from './dc_events.js'
 import Dataset from './dataset.js'
-import { watch } from 'vue'
+import { watch, triggerRef } from 'vue'
 
 export default class DCCore extends DCEvents {
 
@@ -344,9 +344,9 @@ export default class DCCore extends DCEvents {
 
         // The only way to get Vue to update all stuff
         // reactively is to create a brand new object.
-        // TODO: Is there a simpler approach?
         Object.assign(new_obj, obj.v)
         Object.assign(new_obj, data)
+        
         obj.p[obj.i] = new_obj
 
     }

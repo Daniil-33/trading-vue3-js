@@ -85,10 +85,21 @@ export default class Pin {
 
     update() {
 
+        // Expand the full cursor object to see all properties
+        console.log(`📍 Pin.update() - ${this.name} - cursor object:`, JSON.parse(JSON.stringify(this.comp.$props.cursor)))
+
         this.y$ = this.comp.$props.cursor.y$
         this.y =  this.comp.$props.cursor.y
         this.t = this.comp.$props.cursor.t
         this.x =  this.comp.$props.cursor.x
+
+        console.log(`📍 Pin.update() - ${this.name} - extracted values:`, {
+            state: this.state,
+            't from cursor': this.comp.$props.cursor.t,
+            'y$ from cursor': this.comp.$props.cursor.y$,
+            't assigned': this.t,
+            'y$ assigned': this.y$
+        })
 
         // Save pin as time in IB mode
         //if (this.layout.ti_map.ib) {
@@ -98,6 +109,7 @@ export default class Pin {
         // Reset the settings attahed to the pin (position)
         // Vue 3: Use custom_event if available, otherwise use $emit
         if (this.comp.custom_event) {
+            console.log(`   → Calling custom_event('change-settings', {${this.name}: [${this.t}, ${this.y$}]})`)
             this.comp.custom_event('change-settings', {
                  [this.name]: [this.t, this.y$]
             })
@@ -148,6 +160,7 @@ export default class Pin {
         switch(this.state) {
             case 'tracking':
             case 'dragging':
+                console.log(`🖱️ Pin.mousemove - ${this.name} - state: ${this.state}`)
                 this.moved = true
                 this.update()
                 break

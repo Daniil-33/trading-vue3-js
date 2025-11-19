@@ -90,9 +90,9 @@ export default {
         },
         cursor_changed(e) {
             if (e.mode) this.cursor.mode = e.mode
-            if (this.cursor.mode !== 'explore') {
-                this.updater.sync(e)
-            }
+            // Always update cursor coordinates, even in explore mode
+            // This is needed for drawing tools to get cursor position
+            this.updater.sync(e)
             if (this._hook_xchanged) this.ce('?x-changed', e)
         },
         cursor_locked(state) {

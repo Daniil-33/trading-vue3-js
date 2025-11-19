@@ -103,14 +103,20 @@ export default {
                 // update 'tools' automatically when new item
                 // is pushed/removed. Yo, Vue, I herd you
                 // you want more dirty tricks?
-                if (n?.tools) this.tool_count = n.tools.length
+                if (n?.data?.tools) {
+                    this.tool_count = n.data.tools.length
+                } else if (n?.tools) {
+                    this.tool_count = n.tools.length
+                }
             },
             deep: true
         },
         data: {
             handler(n) {
                 // Fallback for when dc is not available
-                if (!this.dc && n?.tools) this.tool_count = n.tools.length
+                if (!this.dc && n?.tools) {
+                    this.tool_count = n.tools.length
+                }
             },
             deep: true
         }

@@ -43,13 +43,21 @@ export default {
         },
         // Called after overlay mounted
         init() {
+            console.log('🔧 LineTool.init() called')
+            console.log('   Current settings:', this.$props.settings)
+            
             // First pin is settled at the mouse position
             this.pins.push(new Pin(this, 'p1'))
+            console.log('   ✅ Created pin p1')
+            
             // Second one is following mouse until it clicks
             this.pins.push(new Pin(this, 'p2', {
                 state: 'tracking'
             }))
+            console.log('   ✅ Created pin p2 (tracking)')
+            
             this.pins[1].on('settled', () => {
+                console.log('   📍 Pin p2 settled - finishing drawing')
                 // Call when current tool drawing is finished
                 // (Optionally) reset the mode back to 'Cursor'
                 // IMPORTANT: Only emit drawing-mode-off if this is initial creation
@@ -66,8 +74,19 @@ export default {
             })
         },
         draw(ctx) {
-            if (!this.p1 || !this.p2) return
+            console.log('🎨 LineTool.draw() called')
+            console.log('   settings:', this.$props.settings)
+            console.log('   p1:', this.p1)
+            console.log('   p2:', this.p2)
+            console.log('   sett:', this.sett)
+            
+            if (!this.p1 || !this.p2) {
+                console.warn('   ⚠️ Skipped: p1 or p2 is null')
+                return
+            }
 
+            console.log('   ✅ Drawing line from', this.p1, 'to', this.p2)
+            
             ctx.lineWidth = this.line_width
             ctx.strokeStyle = this.color
             ctx.beginPath()

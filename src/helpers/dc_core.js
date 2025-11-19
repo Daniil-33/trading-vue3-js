@@ -60,6 +60,16 @@ export default class DCCore extends DCEvents {
             this.data.datasets = []
         }
 
+        // Initialize tools array if not exists
+        if (!('tools' in this.data)) {
+            this.data.tools = []
+        }
+
+        // Initialize current tool if not exists
+        if (!('tool' in this.data)) {
+            this.data.tool = 'Cursor'
+        }
+
         // Init dataset proxies
         for (var ds of this.data.datasets) {
             if (!this.dss) this.dss = {}

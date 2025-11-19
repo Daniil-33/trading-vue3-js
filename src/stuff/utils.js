@@ -312,8 +312,9 @@ export default {
     },
 
     // Default cursor mode
+    // Changed to always return 'explore' for drawing tools to work
     xmode() {
-        return this.is_mobile ? 'explore' : 'default'
+        return 'explore' // Previously: this.is_mobile ? 'explore' : 'default'
     },
 
     default_prevented(event) {

@@ -28,22 +28,6 @@ export default {
     mounted() {
         window.addEventListener('resize', this.onResize)
         window.dc = this.chart
-        
-        // // Проверяем, что tools инициализированы
-        // console.log('DataCube tools:', this.chart.data.tools)
-        // console.log('DataCube tool:', this.chart.data.tool)
-        
-        // // Если tools не инициализированы, добавляем базовые инструменты
-        // if (!this.chart.data.tools || this.chart.data.tools.length === 0) {
-        //     console.warn('Tools не найдены, инициализируем базовые инструменты...')
-        //     this.chart.data.tools = [
-        //         {
-        //             type: 'Cursor',
-        //             icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZAgMAAAC5h23wAAAAAXNSR0IB2cksfwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAxQTFRFAAAATU1NTU1NTU1NwlMHHwAAAAR0Uk5TAOvhxbpPrUkAAAAkSURBVHicY2BgYHBggAByabxg1WoGBq2pRCk9AKUbcND43AEAufYHlSuusE4AAAAASUVORK5CYII='
-        //         }
-        //     ]
-        //     this.chart.data.tool = 'Cursor'
-        // }
     },
     beforeUnmount() {
         window.removeEventListener('resize', this.onResize)

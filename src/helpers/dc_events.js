@@ -174,6 +174,7 @@ export default class DCEvents {
         }
         this.data.tools = list
         this.data.tool = 'Cursor'
+        console.log(`✅ Registered ${list.length} tools:`, list.map(t => t.type))
     }
 
     exec_script(args) {
@@ -316,12 +317,18 @@ export default class DCEvents {
         this.object_selected([])
 
         let cursor = this.tv.$refs.chart.cursor
-        if (cursor.mode !== 'explore') return
+        
+        if (cursor.mode !== 'explore') {
+            console.warn('⚠️ Cursor mode is not "explore":', cursor.mode)
+            return
+        }
         if (cursor.lock_tool) return
         if (!this.data.tool || this.data.tool === 'Cursor') {
             return
         }
         if (this.data.drawingMode) return
+        
+        console.log('✅ Creating drawing tool:', this.data.tool)
         this.build_tool(args[0])
         if (args[1]) {
             this.data.drawingMode = true
@@ -336,11 +343,17 @@ export default class DCEvents {
 
     // Place a new tool
     build_tool(grid_id, type) {
-
         let list = this.data.tools
         type = type || this.data.tool
+        
         let proto = list.find(x => x.type === type)
-        if (!proto) return
+        if (!proto) {
+            console.warn('⚠️ Tool not found:', type)
+            return
+        }
+        
+        console.log('🏗️ Building tool:', type)
+        
         let sett = Object.assign({}, proto.settings || {})
         let data = (proto.data || []).slice()
 
@@ -354,6 +367,7 @@ export default class DCEvents {
         sett.$state = 'wip'
 
         let side = grid_id ? 'offchart' : 'onchart'
+        
         let id = this.add(side, {
             name: proto.name,
             type: type.split(':')[0],
@@ -366,6 +380,8 @@ export default class DCEvents {
 
         this.data.selected = sett.$uuid
         this.add_trash_icon()
+        
+        console.log('✅ Tool created with ID:', id)
     }
 
     // Remove selected / Remove all, etc
@@ -384,10 +400,21 @@ export default class DCEvents {
 
     // Apply new overlay settings
     change_settings(args) {
+        console.log('🔧 change_settings:', {
+            settings: args[0],
+            grid_id: args[1],
+            overlay_id: args[2],
+            path: args[3]
+        })
         let settings = args[0]
         delete settings.id
-        let grid_id = args[1]
+        
+        console.log(`   → Merging to path: ${args[3]}.settings`)
         this.merge(`${args[3]}.settings`, settings)
+        
+        // Check if merge worked
+        const result = this.get_one(`${args[3]}.settings`)
+        console.log('   → After merge, settings are:', result)
     }
 
     // Lock the scrolling mechanism

@@ -78,10 +78,10 @@ export default class Grid {
         })
 
         mc.on('panmove', event => {
-            if (Utils.is_mobile) {
-                this.calc_offset()
-                this.propagate('mousemove', this.touch2mouse(event))
-            }
+            this.calc_offset()
+            const mouseEvent = Utils.is_mobile ? this.touch2mouse(event) : event
+            this.propagate('mousemove', mouseEvent)
+            
             if (this.drug) {
                 this.mousedrag(
                     this.drug.x + event.deltaX,

@@ -49,6 +49,23 @@ export default {
     components: {
         Chart, Toolbar, Widgets, TheTip
     },
+    emits: [
+        // 'register-tools',
+        // 'data-len-changed', 
+        // 'tool-selected',
+        // 'grid-mousedown',
+        // 'scroll-lock',
+        // 'drawing-mode-off'
+        'custom-event', 
+        'range-changed', 
+        'sidebar-transform', 
+        'layer-meta-props', 
+        'drawing-mode-off', 
+        'change-settings', 
+        'remove-tool', 
+        'object-selected', 
+        'scroll-lock'
+    ],
     mixins: [ XControl ],
     props: {
         titleTxt: {
@@ -193,6 +210,7 @@ export default {
                 title_txt: this.$props.titleTxt,
                 overlays: this.$props.overlays.concat(this.mod_ovs),
                 data: this.decubed,
+                dc: this.$props.data,  // Pass full DataCube for toolbar
                 width: this.$props.width - offset,
                 height: this.$props.height,
                 font: this.font_comp,
@@ -246,6 +264,45 @@ export default {
                 this.skin_proto.font : this.font
         }
     },
+    emits: [
+        // 'custom-event',
+        // 'range-changed',
+        // 'legend-button-click',
+        // 'register-tools'
+        'custom-event',
+        'range-changed',
+        'rezoom-range',
+        'scroll-lock',
+        'drawing-mode-off',
+        'object-selected',
+        'change-settings',
+        'remove-tool',
+        'tool-selected',
+        'layer-meta-props',
+        'new-grid-layer',
+        'delete-grid-layer',
+        'show-grid-layer',
+        'redraw-grid',
+        'exec-script',
+        'register-tools',
+        'sidebar-transform',
+        'legend-button-click',
+        'legend-button-click',
+        'item-selected',
+        'register-kb-listener',
+        'remove-kb-listener',
+        'keydown',
+        'keyup',
+        'keypress',
+        'new-shader',
+        'data-len-changed',
+        'grid-mousedown',
+        'signal',
+        'cursor-locked',
+        'cursor-changed',
+        'remove-shaders',
+        'remove-layer-meta'
+    ],
     data() {
         return { reset: 0, tip: null }
     },

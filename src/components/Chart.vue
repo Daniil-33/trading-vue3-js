@@ -41,10 +41,11 @@ import Const from '../stuff/constants.js'
 export default {
     name: 'Chart',
     props: [
-        'title_txt', 'data', 'width', 'height', 'font', 'colors',
+        'title_txt', 'data', 'dc', 'width', 'height', 'font', 'colors',
         'overlays', 'tv_id', 'config', 'buttons', 'toolbar', 'ib',
         'skin', 'timezone'
     ],
+    emits: ['custom-event', 'range-changed', 'legend-button-click'],
     mixins: [Shaders, DataTrack],
     components: {
         GridSection,
@@ -169,7 +170,8 @@ export default {
                 config: this.$props.config,
                 buttons: this.$props.buttons,
                 meta: this.meta,
-                skin: this.$props.skin
+                skin: this.$props.skin,
+                dc: this.$props.dc  // Pass DataCube to Grid
             }
         },
         overlay_subset(source, side) {

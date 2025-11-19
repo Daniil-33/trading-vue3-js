@@ -10,7 +10,7 @@ export default {
     props: [
         'id', 'num', 'interval', 'cursor', 'colors',
         'layout', 'sub', 'data', 'settings', 'grid_id',
-        'font', 'config', 'meta', 'tf', 'i0', 'last'
+        'font', 'config', 'meta', 'tf', 'i0', 'last', 'dc'
     ],
     mounted() {
         // TODO(1): when hot reloading, dynamicaly changed mixins
@@ -27,14 +27,8 @@ export default {
 
         this.meta_info()
 
-        // TODO(1): quick fix for vue2, in vue3 we use 3rd party emit
-        try {
-            new Function('return ' + this.$emit)()
-            this._$emit = this.$emit
-            this.$emit = this.custom_event
-        } catch(e) {
-            this._$emit = this.$emit
-        }
+        // Vue 3: Cannot override $emit, so we keep the original
+        this._$emit = this.$emit
 
         this._$emit('new-grid-layer', {
             name: this.$options.name,

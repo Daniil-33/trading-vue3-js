@@ -268,7 +268,9 @@ export default {
         },
         cursor: {
             handler: function() {
-                if (!this.$props.cursor.locked) this.redraw()
+                // Always redraw on cursor change, even when locked
+                // (locked prevents scrolling, not redrawing)
+                this.redraw()
             },
             deep: true
         },

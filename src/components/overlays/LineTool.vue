@@ -76,27 +76,30 @@ export default {
         draw(ctx) {
             console.log('🎨 LineTool.draw() called')
             console.log('   settings:', this.$props.settings)
-            console.log('   p1:', this.p1)
-            console.log('   p2:', this.p2)
+            console.log('   settings.p1:', this.$props.settings.p1)
+            console.log('   settings.p2:', this.$props.settings.p2)
             console.log('   sett:', this.sett)
             
-            if (!this.p1 || !this.p2) {
+            const p1 = this.$props.settings.p1
+            const p2 = this.$props.settings.p2
+            
+            if (!p1 || !p2) {
                 console.warn('   ⚠️ Skipped: p1 or p2 is null')
                 return
             }
 
-            console.log('   ✅ Drawing line from', this.p1, 'to', this.p2)
+            console.log('   ✅ Drawing line from', p1, 'to', p2)
             
             ctx.lineWidth = this.line_width
             ctx.strokeStyle = this.color
             ctx.beginPath()
 
             if (this.sett.ray) {
-                new Ray(this, ctx).draw(this.p1, this.p2)
+                new Ray(this, ctx).draw(p1, p2)
             } else if (this.sett.extended) {
-                new Line(this, ctx).draw(this.p1, this.p2)
+                new Line(this, ctx).draw(p1, p2)
             } else {
-                new Seg(this, ctx).draw(this.p1, this.p2)
+                new Seg(this, ctx).draw(p1, p2)
             }
 
             ctx.stroke()
